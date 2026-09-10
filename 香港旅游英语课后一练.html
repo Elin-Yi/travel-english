@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>香港旅游英语 · 课后一练</title>
+<style>
+  :root {
+    --ui: #0e7490; --ui-bg: #e0f2f5; --ink: #1f2937; --muted: #64748b;
+    --line: #dbe7ea; --export: #f97316; --export-bg: #fff3e8; --sand: #fdf3e6;
+    --ok: #059669; --ok-bg: #ecfdf5; --bad: #dc2626; --bad-bg: #fef2f2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #eef7f8; color: var(--ink); padding: 28px 16px 60px; }
+  .wrap { max-width: 780px; margin: 0 auto; }
+
+  .top { background: linear-gradient(120deg, #0e7490, #0ea5a4); color: #fff; border-radius: 16px; padding: 22px 24px; position: relative; overflow: hidden; }
+  .top::after { content: "🌃"; position: absolute; right: 20px; top: 10px; font-size: 72px; opacity: .15; }
+  .top h1 { font-size: 24px; font-weight: 800; letter-spacing: .5px; }
+  .top p { margin-top: 8px; font-size: 13.5px; opacity: .92; }
+  .top .back { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 13px; color: #fff; background: rgba(255,255,255,.18); padding: 7px 14px; border-radius: 999px; text-decoration: none; }
+  .top .back:hover { background: rgba(255,255,255,.3); }
+
+  .scorebar { position: sticky; top: 10px; z-index: 5; display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 16px; margin: 16px 0 8px; box-shadow: 0 4px 14px rgba(15,60,75,.06); }
+  .scorebar .s { font-size: 13px; font-weight: 700; color: var(--muted); }
+  .scorebar .s b { color: var(--export); font-size: 17px; }
+  .scorebar .reset { margin-left: auto; border: 1px solid var(--line); background: #fff; color: var(--muted); font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+  .scorebar .reset:hover { color: var(--ui); border-color: var(--ui); }
+
+  .q { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 14px; }
+  .q .qhead { display: flex; align-items: flex-start; gap: 10px; }
+  .q .no { flex: none; width: 26px; height: 26px; border-radius: 8px; background: var(--ui-bg); color: var(--ui); font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+  .q .tag { flex: none; font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 6px; margin-left: auto; letter-spacing: .5px; }
+  .tag.mc { background: #eef2ff; color: #4f46e5; }
+  .tag.fill { background: var(--export-bg); color: var(--export); }
+  .tag.sa { background: #f0fdf4; color: #16a34a; }
+  .q .qtext { font-size: 15px; font-weight: 700; line-height: 1.6; margin-top: 4px; }
+  .q .qtext .en { color: var(--ui); }
+
+  .opts { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .opt { display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 14px; cursor: pointer; font-size: 14px; transition: all .15s; }
+  .opt:hover { border-color: var(--ui); background: #f7fbfc; }
+  .opt .k { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--muted); }
+  .opt.correct { border-color: var(--ok); background: var(--ok-bg); }
+  .opt.correct .k { border-color: var(--ok); background: var(--ok); color: #fff; }
+  .opt.wrong { border-color: var(--bad); background: var(--bad-bg); }
+  .opt.wrong .k { border-color: var(--bad); background: var(--bad); color: #fff; }
+  .opt.locked { pointer-events: none; }
+
+  .fill-row { margin-top: 14px; display: flex; gap: 8px; }
+  .fill-row input { flex: 1; border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 14px; color: var(--ink); outline: none; }
+  .fill-row input:focus { border-color: var(--ui); }
+  .fill-row input.ok { border-color: var(--ok); background: var(--ok-bg); }
+  .fill-row input.no { border-color: var(--bad); background: var(--bad-bg); }
+  .fill-row button { border: none; border-radius: 10px; background: var(--ui); color: #fff; font-size: 14px; font-weight: 700; padding: 0 20px; cursor: pointer; }
+
+  .sa-row { margin-top: 14px; }
+  .sa-row textarea { width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.6; resize: vertical; min-height: 74px; color: var(--ink); outline: none; font-family: inherit; }
+  .sa-row textarea:focus { border-color: var(--ui); }
+  .sa-row .refbtn { margin-top: 8px; border: 1px solid var(--export); background: var(--export-bg); color: var(--export); font-size: 13px; font-weight: 700; padding: 7px 14px; border-radius: 8px; cursor: pointer; }
+
+  .explain { display: none; margin-top: 12px; font-size: 13px; line-height: 1.6; color: var(--muted); background: #f8fafc; border-left: 3px solid var(--ui); border-radius: 6px; padding: 10px 14px; }
+  .explain.show { display: block; }
+  .explain b { color: var(--ui); }
+
+  .foot { text-align: center; color: var(--muted); font-size: 12.5px; margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>📝 香港旅游英语 · 课后一练</h1>
+    <p>配套《香港旅游英语_数字人讲解》短视频 · 共 10 题（选择 4 · 填空 3 · 问答 3）</p>
+    <a class="back" href="index.html">← 返回创作页</a>
+  </div>
+
+  <div class="scorebar">
+    <span class="s">得分：<b id="score">0</b> / <span id="total">7</span></span>
+    <span class="s" id="status">未开始</span>
+    <button class="reset" onclick="resetAll()">↻ 重新作答</button>
+  </div>
+
+  <div id="quiz"></div>
+
+  <div class="foot">香港旅游英语课后一练 · 选择题与填空题自动判分，问答题提供参考答案</div>
+</div>
+
+<script>
+  const QUESTIONS = [
+    { type: 'mc', q: 'What is the best way to reach <span class="en">Victoria Peak</span>?',
+      options: ['By bus 乘巴士', 'By the Peak Tram 乘山顶缆车', 'By ferry 乘渡轮', 'By subway 乘地铁'],
+      answer: 1, explain: '视频用山顶缆车（Peak Tram）上太平山顶俯瞰全城。' },
+    { type: 'mc', q: '“<span class="en">Hop on</span> the Star Ferry for a classic ride across the harbour.” 句中 hop on 的意思是：',
+      options: ['下车', '乘坐', '排队', '拍照'],
+      answer: 1, explain: 'hop on 意为“跳上/乘坐（交通工具）”。' },
+    { type: 'mc', q: 'Which food is called <span class="en">the heart of Cantonese cuisine</span>?',
+      options: ['Egg tart 蛋挞', 'Dim sum 点心', 'Bubble tea 珍珠奶茶', 'Fortune cookie 幸运饼干'],
+      answer: 1, explain: '点心（dim sum）被誉为粤菜的灵魂，对应分镜第 4 镜。' },
+    { type: 'mc', q: 'The Big Buddha is located on which island?',
+      options: ['Hong Kong Island 香港岛', 'Lantau Island 大屿山', 'Kowloon 九龙', 'Cheung Chau 长洲'],
+      answer: 1, explain: '天坛大佛（Big Buddha）位于大屿山（Lantau Island）。' },
+    { type: 'fill', q: '“Welcome to Hong Kong — a <span class="en">______</span> city where East meets West!”',
+      answers: ['dazzling'], explain: 'dazzling 意为“璀璨的、令人目眩的”。' },
+    { type: 'fill', q: 'Temple Street Night Market is famous for street food and <span class="en">______</span>.',
+      answers: ['fortune tellers', 'fortune teller'], explain: '庙街夜市以街头小吃和算命师（fortune tellers）闻名。' },
+    { type: 'fill', q: '“Feeling hungry? Let\'s try some <span class="en">______</span> — the heart of Cantonese cuisine.”',
+      answers: ['dim sum'], explain: '句型 Let\'s try some ...（让我们尝尝……），故填 dim sum。' },
+    { type: 'sa', q: '用 “Have you ever been to ...?” 造一个关于香港的句子。',
+      ref: 'Have you ever been to Hong Kong?', explain: '句型 Have you ever been to + 地点，询问“你曾经去过……吗”。' },
+    { type: 'sa', q: '把这句话翻译成英文：“让我们乘坐天星小轮横渡维港吧。”',
+      ref: 'Let\'s hop on the Star Ferry for a ride across the harbour.', explain: '句型 Let\'s hop on ... for ...（让我们乘坐……去……）。' },
+    { type: 'sa', q: '写出视频中提到的两个香港景点或体验（中文或英文均可）。',
+      ref: '太平山顶 Victoria Peak / 天星小轮 Star Ferry / 庙街夜市 Temple Street Night Market / 天坛大佛 Big Buddha（任选两个）',
+      explain: '视频共出现：太平山顶、天星小轮、港式点心、庙街夜市、天坛大佛等。' },
+  ];
+
+  let score = 0;
+  const scored = QUESTIONS.filter(q => q.type !== 'sa').length;
+
+  function norm(s) {
+    return s.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+
+  function render() {
+    const box = document.getElementById('quiz');
+    box.innerHTML = '';
+    QUESTIONS.forEach((q, i) => {
+      const card = document.createElement('div');
+      card.className = 'q';
+      const tagCls = { mc: 'mc', fill: 'fill', sa: 'sa' }[q.type];
+      const tagTxt = { mc: '选择题', fill: '填空题', sa: '问答题' }[q.type];
+      card.innerHTML = `
+        <div class="qhead">
+          <span class="no">${i + 1}</span>
+          <div class="qtext">${q.q}</div>
+          <span class="tag ${tagCls}">${tagTxt}</span>
+        </div>`;
+
+      if (q.type === 'mc') {
+        const opts = document.createElement('div');
+        opts.className = 'opts';
+        q.options.forEach((o, j) => {
+          const d = document.createElement('div');
+          d.className = 'opt';
+          d.innerHTML = `<span class="k">${String.fromCharCode(65 + j)}</span><span>${o}</span>`;
+          d.onclick = () => answerMC(card, q, j, opts);
+          opts.appendChild(d);
+        });
+        card.appendChild(opts);
+      } else if (q.type === 'fill') {
+        const row = document.createElement('div');
+        row.className = 'fill-row';
+        row.innerHTML = `<input type="text" placeholder="输入英文答案…"><button>检查</button>`;
+        const input = row.querySelector('input');
+        row.querySelector('button').onclick = () => answerFill(card, q, input);
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') answerFill(card, q, input); });
+        card.appendChild(row);
+      } else {
+        const row = document.createElement('div');
+        row.className = 'sa-row';
+        row.innerHTML = `<textarea placeholder="写下你的答案…"></textarea><button class="refbtn">💡 显示参考答案</button>`;
+        row.querySelector('.refbtn').onclick = () => {
+          const ex = card.querySelector('.explain');
+          ex.innerHTML = `参考答案：<b>${q.ref}</b><br>${q.explain}`;
+          ex.classList.add('show');
+        };
+        card.appendChild(row);
+      }
+
+      const ex = document.createElement('div');
+      ex.className = 'explain';
+      card.appendChild(ex);
+      box.appendChild(card);
+    });
+    update();
+  }
+
+  function answerMC(card, q, j, opts) {
+    const optEls = opts.querySelectorAll('.opt');
+    if (optEls[0].classList.contains('locked')) return;
+    optEls.forEach((el, k) => {
+      el.classList.add('locked');
+      if (k === q.answer) el.classList.add('correct');
+      else if (k === j) el.classList.add('wrong');
+    });
+    const ok = j === q.answer;
+    if (ok) score++;
+    showExplain(card, ok, ok ? '回答正确！' : `正确答案：${String.fromCharCode(65 + q.answer)}`, q.explain, ok);
+    update();
+  }
+
+  function answerFill(card, q, input) {
+    if (input.classList.contains('ok') || input.classList.contains('no')) return;
+    const ok = q.answers.some(a => norm(a) === norm(input.value));
+    if (ok) { score++; input.classList.add('ok'); }
+    else { input.classList.add('no'); }
+    input.disabled = true;
+    showExplain(card, ok, ok ? '回答正确！' : `正确答案：${q.answers[0]}`, q.explain, ok);
+    update();
+  }
+
+  function showExplain(card, ok, head, explain, good) {
+    const ex = card.querySelector('.explain');
+    ex.innerHTML = `<b>${head}</b><br>${explain}`;
+    ex.classList.add('show');
+  }
+
+  function update() {
+    document.getElementById('score').textContent = score;
+    document.getElementById('total').textContent = scored;
+    document.getElementById('status').textContent = score === scored ? '🎉 已完成' : '进行中';
+  }
+
+  function resetAll() {
+    score = 0;
+    render();
+  }
+
+  render();
+</script>
+</body>
+</html>

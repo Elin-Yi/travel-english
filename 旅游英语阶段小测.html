@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>旅游英语 · 阶段小测</title>
+<style>
+  :root {
+    --ui: #0e7490; --ui-bg: #e0f2f5; --ink: #1f2937; --muted: #64748b;
+    --line: #dbe7ea; --export: #f97316; --export-bg: #fff3e8; --sand: #fdf3e6;
+    --ok: #059669; --ok-bg: #ecfdf5; --bad: #dc2626; --bad-bg: #fef2f2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background: #eef7f8; color: var(--ink); padding: 28px 16px 60px; }
+  .wrap { max-width: 780px; margin: 0 auto; }
+
+  .top { background: linear-gradient(120deg, #0e7490, #f97316); color: #fff; border-radius: 16px; padding: 22px 24px; position: relative; overflow: hidden; }
+  .top::after { content: "🧳"; position: absolute; right: 20px; top: 10px; font-size: 72px; opacity: .16; }
+  .top h1 { font-size: 24px; font-weight: 800; letter-spacing: .5px; }
+  .top p { margin-top: 8px; font-size: 13.5px; opacity: .92; }
+  .top .back { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 13px; color: #fff; background: rgba(255,255,255,.18); padding: 7px 14px; border-radius: 999px; text-decoration: none; }
+  .top .back:hover { background: rgba(255,255,255,.3); }
+
+  .scorebar { position: sticky; top: 10px; z-index: 5; display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 16px; margin: 16px 0 8px; box-shadow: 0 4px 14px rgba(15,60,75,.06); }
+  .scorebar .s { font-size: 13px; font-weight: 700; color: var(--muted); }
+  .scorebar .s b { color: var(--export); font-size: 17px; }
+  .scorebar .reset { margin-left: auto; border: 1px solid var(--line); background: #fff; color: var(--muted); font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+  .scorebar .reset:hover { color: var(--ui); border-color: var(--ui); }
+
+  .q { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 14px; }
+  .q .qhead { display: flex; align-items: flex-start; gap: 10px; }
+  .q .no { flex: none; width: 26px; height: 26px; border-radius: 8px; background: var(--ui-bg); color: var(--ui); font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+  .q .tag { flex: none; font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 6px; margin-left: auto; letter-spacing: .5px; }
+  .tag.mc { background: #eef2ff; color: #4f46e5; }
+  .tag.fill { background: var(--export-bg); color: var(--export); }
+  .tag.sa { background: #f0fdf4; color: #16a34a; }
+  .q .qtext { font-size: 15px; font-weight: 700; line-height: 1.6; margin-top: 4px; }
+  .q .qtext .en { color: var(--ui); }
+  .dst { display: inline-block; background: #f1f5f9; color: #475569; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-right: 6px; vertical-align: 1px; }
+
+  .opts { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .opt { display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 14px; cursor: pointer; font-size: 14px; transition: all .15s; }
+  .opt:hover { border-color: var(--ui); background: #f7fbfc; }
+  .opt .k { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--muted); }
+  .opt.correct { border-color: var(--ok); background: var(--ok-bg); }
+  .opt.correct .k { border-color: var(--ok); background: var(--ok); color: #fff; }
+  .opt.wrong { border-color: var(--bad); background: var(--bad-bg); }
+  .opt.wrong .k { border-color: var(--bad); background: var(--bad); color: #fff; }
+  .opt.locked { pointer-events: none; }
+
+  .fill-row { margin-top: 14px; display: flex; gap: 8px; }
+  .fill-row input { flex: 1; border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 14px; color: var(--ink); outline: none; }
+  .fill-row input:focus { border-color: var(--ui); }
+  .fill-row input.ok { border-color: var(--ok); background: var(--ok-bg); }
+  .fill-row input.no { border-color: var(--bad); background: var(--bad-bg); }
+  .fill-row button { border: none; border-radius: 10px; background: var(--ui); color: #fff; font-size: 14px; font-weight: 700; padding: 0 20px; cursor: pointer; }
+
+  .sa-row { margin-top: 14px; }
+  .sa-row textarea { width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.6; resize: vertical; min-height: 74px; color: var(--ink); outline: none; font-family: inherit; }
+  .sa-row textarea:focus { border-color: var(--ui); }
+  .sa-row .refbtn { margin-top: 8px; border: 1px solid var(--export); background: var(--export-bg); color: var(--export); font-size: 13px; font-weight: 700; padding: 7px 14px; border-radius: 8px; cursor: pointer; }
+
+  .explain { display: none; margin-top: 12px; font-size: 13px; line-height: 1.6; color: var(--muted); background: #f8fafc; border-left: 3px solid var(--ui); border-radius: 6px; padding: 10px 14px; }
+  .explain.show { display: block; }
+  .explain b { color: var(--ui); }
+
+  .foot { text-align: center; color: var(--muted); font-size: 12.5px; margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>🧳 旅游英语 · 阶段小测</h1>
+    <p>综合 澳门 · 香港 · 台湾 · 共 20 题（选择 8 · 填空 6 · 问答 6）</p>
+    <a class="back" href="index.html">← 返回创作页</a>
+  </div>
+
+  <div class="scorebar">
+    <span class="s">得分：<b id="score">0</b> / <span id="total">14</span></span>
+    <span class="s" id="status">未开始</span>
+    <button class="reset" onclick="resetAll()">↻ 重新作答</button>
+  </div>
+
+  <div id="quiz"></div>
+
+  <div class="foot">旅游英语阶段小测 · 选择题与填空题自动判分，问答题提供参考答案</div>
+</div>
+
+<script>
+  // dest = 目的地标签；type = mc(选择) / fill(填空) / sa(问答)
+  const QUESTIONS = [
+    { dest: '澳门', type: 'mc', q: 'What is the <span class="en">most iconic landmark</span> in Macau?',
+      options: ['Macau Tower 澳门旅游塔', 'Ruins of St. Paul\'s 大三巴牌坊', 'Senado Square 议事亭前地', 'Cotai Strip 路氹城'],
+      answer: 1, explain: '大三巴牌坊（Ruins of St. Paul\'s）是澳门最具标志性的地标。' },
+    { dest: '香港', type: 'mc', q: 'What is the best way to reach <span class="en">Victoria Peak</span>?',
+      options: ['By bus 乘巴士', 'By the Peak Tram 乘山顶缆车', 'By ferry 乘渡轮', 'By subway 乘地铁'],
+      answer: 1, explain: '视频用山顶缆车（Peak Tram）上太平山顶俯瞰全城。' },
+    { dest: '台湾', type: 'mc', q: 'Taipei 101 was once ____.',
+      options: ['the tallest building in the world 世界最高建筑', 'the largest museum 最大的博物馆', 'the biggest lake 最大的湖泊', 'the oldest temple 最古老的寺庙'],
+      answer: 0, explain: '台北101 曾是世界上最高的建筑。' },
+    { dest: '香港', type: 'mc', q: 'Which food is called <span class="en">the heart of Cantonese cuisine</span>?',
+      options: ['Egg tart 蛋挞', 'Dim sum 点心', 'Bubble tea 珍珠奶茶', 'Fortune cookie 幸运饼干'],
+      answer: 1, explain: '点心（dim sum）被誉为粤菜的灵魂。' },
+    { dest: '澳门', type: 'mc', q: 'Which is a <span class="en">must-try snack</span> in Macau?',
+      options: ['Portuguese egg tart 葡式蛋挞', 'Stinky tofu 臭豆腐', 'Bubble tea 珍珠奶茶', 'Dim sum 点心'],
+      answer: 0, explain: '葡式蛋挞（Portuguese egg tart）是澳门必尝小吃。' },
+    { dest: '台湾', type: 'mc', q: 'Which is the <span class="en">largest lake</span> in Taiwan?',
+      options: ['Alishan 阿里山', 'Sun Moon Lake 日月潭', 'Taroko Gorge 太鲁阁', 'Taipei 101 台北101'],
+      answer: 1, explain: '日月潭（Sun Moon Lake）是台湾最大的湖泊。' },
+    { dest: '香港', type: 'mc', q: 'The Big Buddha is located on which island?',
+      options: ['Hong Kong Island 香港岛', 'Lantau Island 大屿山', 'Kowloon 九龙', 'Cheung Chau 长洲'],
+      answer: 1, explain: '天坛大佛（Big Buddha）位于大屿山（Lantau Island）。' },
+    { dest: '台湾', type: 'mc', q: 'The National Palace Museum is home to thousands of ____.',
+      options: ['ancient Chinese treasures 中国古代珍宝', 'modern paintings 现代绘画', 'sea animals 海洋动物', 'rare plants 稀有植物'],
+      answer: 0, explain: '台北故宫博物院藏有数千件中国古代珍宝（ancient Chinese treasures）。' },
+
+    { dest: '澳门', type: 'fill', q: '“Welcome to Macau — a fascinating <span class="en">______</span> of East and West!”',
+      answers: ['blend'], explain: 'blend 意为“融合、结合”，描述澳门中西文化交融。' },
+    { dest: '香港', type: 'fill', q: '“Welcome to Hong Kong — a <span class="en">______</span> city where East meets West!”',
+      answers: ['dazzling'], explain: 'dazzling 意为“璀璨的、令人目眩的”。' },
+    { dest: '台湾', type: 'fill', q: '“Welcome to Taiwan — a beautiful <span class="en">______</span> famous for its friendly people and delicious food!”',
+      answers: ['island'], explain: '台湾是一座岛屿（island）。' },
+    { dest: '澳门', type: 'fill', q: 'Senado Square is a lively square with <span class="en">______-colored</span> buildings.',
+      answers: ['pastel'], explain: '议事亭前地以“粉彩色的”（pastel-colored）建筑闻名。' },
+    { dest: '香港', type: 'fill', q: 'Temple Street Night Market is famous for street food and <span class="en">______</span>.',
+      answers: ['fortune tellers', 'fortune teller'], explain: '庙街夜市以街头小吃和算命师（fortune tellers）闻名。' },
+    { dest: '台湾', type: 'fill', q: 'Take the forest railway to Alishan for breathtaking <span class="en">______</span> above the clouds.',
+      answers: ['sunrises', 'sunrise'], explain: '阿里山以云海日出（sunrises）闻名。' },
+
+    { dest: '澳门', type: 'sa', q: '把这句话翻译成英文：“如果你喜欢刺激，你应该试试空中漫步。”',
+      ref: 'If you love excitement, you should try the Skywalk.', explain: '句型 If you love ..., you should ...（如果你喜欢……，你应该……）。' },
+    { dest: '香港', type: 'sa', q: '把这句话翻译成英文：“让我们乘坐天星小轮横渡维港吧。”',
+      ref: 'Let\'s hop on the Star Ferry for a ride across the harbour.', explain: '句型 Let\'s hop on ... for ...（让我们乘坐……去……）。' },
+    { dest: '台湾', type: 'sa', q: '把这句话翻译成英文：“让我们乘坐森林铁路去阿里山看日出吧。”',
+      ref: 'Let\'s take the forest railway to Alishan for the sunrise.', explain: '句型 Let\'s take ... to ...（让我们乘坐……去……）。' },
+    { dest: '综合', type: 'sa', q: '用 “Have you ever been to ...?” 造一个关于任一旅游地的句子。',
+      ref: 'Have you ever been to Macau / Hong Kong / Taiwan?', explain: '句型 Have you ever been to + 地点，询问“你曾经去过……吗”。' },
+    { dest: '澳门', type: 'sa', q: '写出视频中提到的两个澳门景点（中文或英文均可）。',
+      ref: '大三巴牌坊 Ruins of St. Paul\'s / 议事亭前地 Senado Square / 澳门旅游塔 Macau Tower / 路氹城 Cotai Strip（任选两个）',
+      explain: '澳门视频共出现：大三巴、议事亭前地、澳门旅游塔、路氹城等。' },
+    { dest: '综合', type: 'sa', q: '“hop on” 的中文意思是什么？并用它造一个短句。',
+      ref: '乘坐。例：Hop on the Star Ferry to cross the harbour.', explain: 'hop on 意为“跳上/乘坐（交通工具）”。' },
+  ];
+
+  let score = 0;
+  const scored = QUESTIONS.filter(q => q.type !== 'sa').length;
+
+  function norm(s) {
+    return s.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+
+  function render() {
+    const box = document.getElementById('quiz');
+    box.innerHTML = '';
+    QUESTIONS.forEach((q, i) => {
+      const card = document.createElement('div');
+      card.className = 'q';
+      const tagCls = { mc: 'mc', fill: 'fill', sa: 'sa' }[q.type];
+      const tagTxt = { mc: '选择题', fill: '填空题', sa: '问答题' }[q.type];
+      const dst = q.dest ? `<span class="dst">${q.dest}</span>` : '';
+      card.innerHTML = `
+        <div class="qhead">
+          <span class="no">${i + 1}</span>
+          <div class="qtext">${dst}${q.q}</div>
+          <span class="tag ${tagCls}">${tagTxt}</span>
+        </div>`;
+
+      if (q.type === 'mc') {
+        const opts = document.createElement('div');
+        opts.className = 'opts';
+        q.options.forEach((o, j) => {
+          const d = document.createElement('div');
+          d.className = 'opt';
+          d.innerHTML = `<span class="k">${String.fromCharCode(65 + j)}</span><span>${o}</span>`;
+          d.onclick = () => answerMC(card, q, j, opts);
+          opts.appendChild(d);
+        });
+        card.appendChild(opts);
+      } else if (q.type === 'fill') {
+        const row = document.createElement('div');
+        row.className = 'fill-row';
+        row.innerHTML = `<input type="text" placeholder="输入英文答案…"><button>检查</button>`;
+        const input = row.querySelector('input');
+        row.querySelector('button').onclick = () => answerFill(card, q, input);
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') answerFill(card, q, input); });
+        card.appendChild(row);
+      } else {
+        const row = document.createElement('div');
+        row.className = 'sa-row';
+        row.innerHTML = `<textarea placeholder="写下你的答案…"></textarea><button class="refbtn">💡 显示参考答案</button>`;
+        row.querySelector('.refbtn').onclick = () => {
+          const ex = card.querySelector('.explain');
+          ex.innerHTML = `参考答案：<b>${q.ref}</b><br>${q.explain}`;
+          ex.classList.add('show');
+        };
+        card.appendChild(row);
+      }
+
+      const ex = document.createElement('div');
+      ex.className = 'explain';
+      card.appendChild(ex);
+      box.appendChild(card);
+    });
+    update();
+  }
+
+  function answerMC(card, q, j, opts) {
+    const optEls = opts.querySelectorAll('.opt');
+    if (optEls[0].classList.contains('locked')) return;
+    optEls.forEach((el, k) => {
+      el.classList.add('locked');
+      if (k === q.answer) el.classList.add('correct');
+      else if (k === j) el.classList.add('wrong');
+    });
+    const ok = j === q.answer;
+    if (ok) score++;
+    showExplain(card, ok, ok ? '回答正确！' : `正确答案：${String.fromCharCode(65 + q.answer)}`, q.explain);
+    update();
+  }
+
+  function answerFill(card, q, input) {
+    if (input.classList.contains('ok') || input.classList.contains('no')) return;
+    const ok = q.answers.some(a => norm(a) === norm(input.value));
+    if (ok) { score++; input.classList.add('ok'); }
+    else { input.classList.add('no'); }
+    input.disabled = true;
+    showExplain(card, ok, ok ? '回答正确！' : `正确答案：${q.answers[0]}`, q.explain);
+    update();
+  }
+
+  function showExplain(card, ok, head, explain) {
+    const ex = card.querySelector('.explain');
+    ex.innerHTML = `<b>${head}</b><br>${explain}`;
+    ex.classList.add('show');
+  }
+
+  function update() {
+    document.getElementById('score').textContent = score;
+    document.getElementById('total').textContent = scored;
+    document.getElementById('status').textContent = score === scored ? '🎉 已完成' : '进行中';
+  }
+
+  function resetAll() {
+    score = 0;
+    render();
+  }
+
+  render();
+</script>
+</body>
+</html>
