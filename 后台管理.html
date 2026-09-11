@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>后台管理 · 旅游英语</title>
+<style>
+  :root {
+    --ui: #0e7490; --ui-bg: #e0f2f5; --ink: #1f2937; --muted: #64748b;
+    --line: #dbe7ea; --export: #f97316; --export-bg: #fff3e8;
+    --ok: #059669; --ok-bg: #ecfdf5; --bad: #dc2626; --bad-bg: #fef2f2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+    background:
+      radial-gradient(circle at 14% 14%, rgba(56,189,248,.16), transparent 42%),
+      radial-gradient(circle at 88% 88%, rgba(249,115,22,.13), transparent 46%),
+      linear-gradient(160deg, #e8f7fb 0%, #f2fafb 42%, #fdf3e6 100%);
+    color: var(--ink); padding: 32px 16px 60px; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+
+  .top {
+    background: linear-gradient(120deg, #0e7490, #0d9488 45%, #f97316);
+    color: #fff; border-radius: 16px; padding: 24px 26px; position: relative; overflow: hidden;
+    box-shadow: 0 10px 26px rgba(14,116,144,.28);
+  }
+  .top::after { content: "⚙️"; position: absolute; right: 18px; top: 6px; font-size: 80px; opacity: .14; }
+  .top h1 { font-size: 25px; font-weight: 800; letter-spacing: .5px; }
+  .top p { margin-top: 8px; font-size: 13.5px; opacity: .94; line-height: 1.6; max-width: 640px; }
+  .top .back {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 13px;
+    color: #fff; background: rgba(255,255,255,.18); padding: 7px 14px; border-radius: 999px; text-decoration: none;
+  }
+  .top .back:hover { background: rgba(255,255,255,.3); }
+
+  .card {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: 20px 22px; margin-top: 16px; box-shadow: 0 4px 16px rgba(15,60,75,.05);
+  }
+  .card h2 { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+  .card h2 .step {
+    flex: none; width: 24px; height: 24px; border-radius: 8px; background: var(--ui);
+    color: #fff; font-size: 13px; display: flex; align-items: center; justify-content: center;
+  }
+  .card .hint { margin-top: 8px; font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+
+  .upload-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+  .up {
+    display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+    border: 1.5px dashed var(--ui); color: var(--ui); border-radius: 10px;
+    padding: 12px 16px; font-size: 14px; font-weight: 700; background: var(--ui-bg);
+    transition: all .15s;
+  }
+  .up:hover { border-style: solid; background: #d2ecf2; }
+
+  .previews { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 16px; }
+  .pv {
+    width: 168px; height: 100px; border-radius: 10px; border: 1.5px solid var(--line);
+    background: #f1f5f9 center/cover no-repeat; display: flex; align-items: center; justify-content: center;
+    color: #9aa3b2; font-size: 12px; position: relative; overflow: hidden;
+  }
+  .pv img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .pv .lbl {
+    position: absolute; left: 0; right: 0; bottom: 0; background: rgba(15,23,42,.62); color: #fff;
+    font-size: 10.5px; padding: 3px 8px; text-align: center;
+  }
+  .filelist { margin-top: 12px; font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px; }
+  .filelist .chip { background: var(--export-bg); color: var(--export); padding: 4px 10px; border-radius: 999px; font-weight: 700; }
+
+  .field { margin-top: 16px; }
+  .field label { display: block; font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 7px; }
+  .field textarea, .field input, .field select {
+    width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 14px;
+    font-size: 14px; color: var(--ink); outline: none; font-family: inherit; background: #fbfcfe;
+  }
+  .field textarea { min-height: 110px; line-height: 1.6; resize: vertical; }
+  .field textarea:focus, .field input:focus, .field select:focus { border-color: var(--ui); background: #fff; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 620px) { .grid2 { grid-template-columns: 1fr; } }
+
+  .opts { margin-top: 14px; font-size: 13px; color: var(--muted); display: flex; gap: 18px; flex-wrap: wrap; }
+  .opts label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .opts input { width: 15px; height: 15px; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+  .actions button {
+    border: none; border-radius: 10px; padding: 12px 22px; font-size: 14.5px; font-weight: 800;
+    cursor: pointer; transition: all .15s;
+  }
+  .actions .primary { background: var(--export); color: #fff; box-shadow: 0 6px 16px rgba(249,115,22,.3); }
+  .actions .primary:hover { background: #ea580c; }
+  .actions .ghost { background: #fff; color: var(--ui); border: 1.5px solid var(--ui); }
+  .actions .ghost:hover { background: var(--ui-bg); }
+  .actions button:disabled { opacity: .55; cursor: not-allowed; }
+
+  .status { margin-top: 16px; font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+  .status.err { color: var(--bad); }
+  .status.ok { color: var(--ok); }
+
+  .result { margin-top: 18px; display: none; }
+  .result.show { display: block; }
+  .result video { width: 100%; border-radius: 12px; background: #000; border: 1px solid var(--line); }
+  .result .dl {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 12px;
+    background: var(--ok); color: #fff; padding: 10px 18px; border-radius: 10px;
+    font-size: 14px; font-weight: 800; text-decoration: none;
+  }
+  .result .dl:hover { background: #047857; }
+
+  .note {
+    margin-top: 16px; background: var(--export-bg); border: 1px solid #fbd5bf; border-radius: 10px;
+    padding: 12px 14px; font-size: 12px; color: #9a5a28; line-height: 1.7;
+  }
+
+  footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 26px; line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <h1>⚙️ 后台管理</h1>
+    <p>支持「文件上传」和「用户指令生成视频」。视频在浏览器端实时合成（画面动画 + 字幕 + 浏览器配音），无需服务器。</p>
+    <a class="back" href="index.html">← 返回首页</a>
+  </div>
+
+  <!-- ① 文件上传 -->
+  <section class="card">
+    <h2><span class="step">1</span> 文件上传</h2>
+    <p class="hint">上传一张背景图（视频画面）和一张数字人照片（右下角人物小窗）。文件只在你的浏览器里处理，<b>不会上传到任何服务器</b>。</p>
+    <div class="upload-row">
+      <label class="up" for="bgInput">🖼 上传背景图<input id="bgInput" type="file" accept="image/*" hidden></label>
+      <label class="up" for="phInput">🧑 上传数字人照片<input id="phInput" type="file" accept="image/*" hidden></label>
+    </div>
+    <div class="previews">
+      <div class="pv" id="bgPreview"><span>背景图预览</span></div>
+      <div class="pv" id="phPreview"><span>数字人照片预览</span></div>
+    </div>
+    <div class="filelist" id="fileList"></div>
+  </section>
+
+  <!-- ② 生成视频 -->
+  <section class="card">
+    <h2><span class="step">2</span> 用户指令生成视频</h2>
+    <p class="hint">在下面输入讲解词（中英文均可），点「生成视频」即可得到一段带画面动画、标题和字幕的短视频。</p>
+
+    <div class="field">
+      <label>讲解词 / 指令</label>
+      <textarea id="script" placeholder="例如：Welcome to Beijing! First, let's visit the Great Wall. Then, let's taste some roast duck. Have you ever been to Beijing?">Welcome to Beijing — a city where history meets the future!
+First, let's visit the Great Wall, one of the Seven Wonders.
+Next, don't miss the Forbidden City, the former imperial palace.
+Are you hungry? Let's taste the world-famous Peking roast duck.
+Have you ever been to Beijing? If not, why not plan a trip this weekend?</textarea>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>配音声音</label>
+        <select id="voice"></select>
+      </div>
+      <div class="field">
+        <label>标题文字（可选）</label>
+        <input id="title" type="text" placeholder="如：北京旅游英语 Beijing Travel English">
+      </div>
+    </div>
+
+    <div class="opts">
+      <label><input type="checkbox" id="micOn"> 生成时同时录制麦克风（可自己念稿配音）</label>
+    </div>
+
+    <div class="actions">
+      <button class="ghost" id="previewBtn">▶ 试听配音</button>
+      <button class="primary" id="genBtn">🎬 生成视频</button>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <div class="result" id="result">
+      <video id="outVideo" controls playsinline></video>
+      <a class="dl" id="dlLink" download="旅游英语_生成视频.webm">⬇ 下载视频</a>
+    </div>
+
+    <div class="note">
+      💡 说明：这是「公开网页·简化生成」版 —— 画面动画、字幕由 Canvas 实时绘制，配音用浏览器内置语音合成（点「试听配音」可先听）。生成的是 <b>webm</b> 格式短视频，与本地 ffmpeg 版（含数字人口型）相比更轻量，适合快速演示。
+    </div>
+  </section>
+
+  <footer>旅游英语 · 后台管理（浏览器端，无需服务器）</footer>
+</div>
+
+<canvas id="cvs" width="1280" height="720" hidden></canvas>
+
+<script>
+(function () {
+  var bgInput = document.getElementById('bgInput');
+  var phInput = document.getElementById('phInput');
+  var bgPreview = document.getElementById('bgPreview');
+  var phPreview = document.getElementById('phPreview');
+  var fileList = document.getElementById('fileList');
+  var scriptEl = document.getElementById('script');
+  var titleEl = document.getElementById('title');
+  var voiceEl = document.getElementById('voice');
+  var micOn = document.getElementById('micOn');
+  var previewBtn = document.getElementById('previewBtn');
+  var genBtn = document.getElementById('genBtn');
+  var statusEl = document.getElementById('status');
+  var resultEl = document.getElementById('result');
+  var outVideo = document.getElementById('outVideo');
+  var dlLink = document.getElementById('dlLink');
+  var cvs = document.getElementById('cvs');
+
+  var bgImage = null;   // HTMLImageElement 背景图
+  var phImage = null;   // HTMLImageElement 数字人照片
+  var files = [];       // 已上传文件（仅本页内记录）
+
+  // ---- 声音列表 ----
+  function fillVoices() {
+    var vs = (window.speechSynthesis && speechSynthesis.getVoices) ? speechSynthesis.getVoices() : [];
+    var en = [], zh = [], other = [];
+    vs.forEach(function (v) {
+      var l = (v.lang || '').toLowerCase();
+      if (l.indexOf('en') === 0) en.push(v);
+      else if (l.indexOf('zh') === 0) zh.push(v);
+      else other.push(v);
+    });
+    voiceEl.innerHTML = '';
+    function addGroup(label, arr) {
+      if (!arr.length) return;
+      var og = document.createElement('optgroup');
+      og.label = label;
+      arr.forEach(function (v) {
+        var o = document.createElement('option');
+        o.value = v.name;
+        o.textContent = v.name + ' (' + v.lang + ')';
+        og.appendChild(o);
+      });
+      voiceEl.appendChild(og);
+    }
+    addGroup('英语 English', en);
+    addGroup('中文 Chinese', zh);
+    addGroup('其他 Other', other);
+    if (!vs.length) {
+      var o = document.createElement('option');
+      o.value = ''; o.textContent = '（浏览器未提供语音，试听不可用）';
+      voiceEl.appendChild(o);
+    }
+  }
+  fillVoices();
+  if (window.speechSynthesis) speechSynthesis.onvoiceschanged = fillVoices;
+
+  // ---- 文件上传 ----
+  function readImage(file, cb) {
+    var fr = new FileReader();
+    fr.onload = function () {
+      var img = new Image();
+      img.onload = function () { cb(img); };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  }
+  function addFile(file, kind) {
+    files.push(file);
+    var chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.textContent = '📎 ' + file.name;
+    fileList.appendChild(chip);
+    setStatus('已读取文件：' + file.name, 'ok');
+  }
+  bgInput.addEventListener('change', function () {
+    var f = bgInput.files[0]; if (!f) return;
+    readImage(f, function (img) {
+      bgImage = img;
+      bgPreview.innerHTML = '';
+      bgPreview.appendChild(img);
+      var lbl = document.createElement('div'); lbl.className = 'lbl'; lbl.textContent = '背景图'; bgPreview.appendChild(lbl);
+      addFile(f, '背景图');
+    });
+  });
+  phInput.addEventListener('change', function () {
+    var f = phInput.files[0]; if (!f) return;
+    readImage(f, function (img) {
+      phImage = img;
+      phPreview.innerHTML = '';
+      phPreview.appendChild(img);
+      var lbl = document.createElement('div'); lbl.className = 'lbl'; lbl.textContent = '数字人照片'; phPreview.appendChild(lbl);
+      addFile(f, '数字人照片');
+    });
+  });
+
+  function setStatus(msg, cls) {
+    statusEl.textContent = msg;
+    statusEl.className = 'status' + (cls ? ' ' + cls : '');
+  }
+
+  // ---- 分句 ----
+  function splitLines(text) {
+    var raw = String(text || '').replace(/\r/g, '');
+    var parts = raw.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+    if (parts.length === 0) return [];
+    // 若只有一段，再按句末标点切分
+    if (parts.length === 1) {
+      var sentences = parts[0].split(/(?<=[.!?。！？])\s*/).map(function (s) { return s.trim(); }).filter(Boolean);
+      if (sentences.length > 1) parts = sentences;
+    }
+    return parts;
+  }
+
+  // ---- 试听配音 ----
+  previewBtn.addEventListener('click', function () {
+    if (!('speechSynthesis' in window)) { setStatus('当前浏览器不支持语音合成', 'err'); return; }
+    speechSynthesis.cancel();
+    var text = scriptEl.value.trim();
+    if (!text) { setStatus('请先输入讲解词', 'err'); return; }
+    var u = new SpeechSynthesisUtterance(text);
+    var name = voiceEl.value;
+    if (name) {
+      var v = speechSynthesis.getVoices().filter(function (x) { return x.name === name; })[0];
+      if (v) u.voice = v;
+    }
+    u.lang = 'en-US'; u.rate = 1.0;
+    speechSynthesis.speak(u);
+    setStatus('🔊 正在试听配音…', 'ok');
+  });
+
+  // ---- 画布工具 ----
+  function rr(ctx, x, y, w, h, r) {
+    r = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+  function drawCover(ctx, img, x, y, tw, th, scale, panX, panY) {
+    var iw = img.naturalWidth || img.width || 1280;
+    var ih = img.naturalHeight || img.height || 720;
+    var base = Math.max(tw / iw, th / ih);
+    var s = base * scale;
+    var w = iw * s, h = ih * s;
+    var dx = x + (tw - w) / 2 + panX;
+    var dy = y + (th - h) / 2 + panY;
+    ctx.drawImage(img, dx, dy, w, h);
+  }
+  function wrapText(ctx, text, maxW) {
+    var words = text.split(' ');
+    var lines = [], cur = '';
+    words.forEach(function (w) {
+      var test = cur ? cur + ' ' + w : w;
+      if (cur && ctx.measureText(test).width > maxW) { lines.push(cur); cur = w; }
+      else cur = test;
+    });
+    if (cur) lines.push(cur);
+    return lines.length ? lines : [text];
+  }
+
+  function drawFrame(ctx, W, H, t, totalDur, lines, title) {
+    var progress = Math.min(1, t / totalDur);
+    var scale = 1.0 + progress * 0.22;           // 缓慢推近
+    var panX = Math.sin(progress * Math.PI) * 40; // 轻微横移
+    var panY = Math.cos(progress * Math.PI) * 18;
+
+    // 背景
+    if (bgImage) {
+      drawCover(ctx, bgImage, 0, 0, W, H, scale, panX, panY);
+    } else {
+      var g = ctx.createLinearGradient(0, 0, W, H);
+      g.addColorStop(0, '#0e7490'); g.addColorStop(1, '#fb923c');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      ctx.font = '170px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('🧳', W / 2, H / 2);
+    }
+
+    // 数字人照片（右下角小窗 + 金色边框 + 轻微浮动）
+    if (phImage) {
+      var pw = Math.round(W * 0.24), phh = Math.round(pw * 0.9);
+      var pad = 28;
+      var bob = Math.sin(t * 1.8) * 7;
+      var px = W - pw - pad, py = H - phh - pad + bob;
+      ctx.save();
+      ctx.fillStyle = '#f7c948';
+      rr(ctx, px - 5, py - 5, pw + 10, phh + 10, 16); ctx.fill();
+      ctx.save();
+      rr(ctx, px, py, pw, phh, 12); ctx.clip();
+      drawCover(ctx, phImage, px, py, pw, phh, 1.05, 0, 0);
+      ctx.restore();
+      ctx.restore();
+    }
+
+    // 标题
+    if (title) {
+      ctx.save();
+      ctx.font = 'bold 42px "Microsoft YaHei", "PingFang SC", sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      var tw = ctx.measureText(title).width + 48;
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      rr(ctx, W / 2 - tw / 2, 30, tw, 66, 14); ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.fillText(title, W / 2, 46);
+      ctx.restore();
+    }
+
+    // 字幕（当前句）
+    var per = totalDur / lines.length;
+    var idx = Math.min(lines.length - 1, Math.floor(t / per));
+    var text = lines[idx];
+    if (text) {
+      ctx.save();
+      ctx.font = 'bold 34px "Microsoft YaHei", "PingFang SC", sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      var maxW = W - 200;
+      var wrapped = wrapText(ctx, text, maxW);
+      var lineH = 48;
+      var boxH = wrapped.length * lineH + 34;
+      var y0 = H - 70 - boxH / 2;
+      ctx.fillStyle = 'rgba(0,0,0,0.62)';
+      rr(ctx, W / 2 - maxW / 2 - 24, y0 - 24, maxW + 48, boxH + 48, 16); ctx.fill();
+      ctx.fillStyle = '#fff';
+      wrapped.forEach(function (ln, i) {
+        ctx.fillText(ln, W / 2, y0 + lineH / 2 + i * lineH);
+      });
+      ctx.restore();
+    }
+  }
+
+  function pickMime() {
+    var cands = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'];
+    for (var i = 0; i < cands.length; i++) {
+      if (window.MediaRecorder && MediaRecorder.isTypeSupported(cands[i])) return cands[i];
+    }
+    return '';
+  }
+
+  // ---- 生成视频 ----
+  genBtn.addEventListener('click', function () {
+    var lines = splitLines(scriptEl.value);
+    if (!lines.length) { setStatus('请先输入讲解词', 'err'); return; }
+    if (!window.MediaRecorder) { setStatus('当前浏览器不支持视频录制，请换用 Chrome / Edge', 'err'); return; }
+    if (typeof canvas === 'undefined' && !cvs.captureStream) { setStatus('当前浏览器不支持画布录制', 'err'); return; }
+
+    var title = titleEl.value.trim();
+    var totalDur = Math.max(4, Math.min(120, lines.length * 3));
+    var W = cvs.width, H = cvs.height;
+    var ctx = cvs.getContext('2d');
+
+    resultEl.classList.remove('show');
+    genBtn.disabled = true;
+    previewBtn.disabled = true;
+    setStatus('正在生成视频… 预计 ' + Math.round(totalDur) + ' 秒');
+
+    var mime = pickMime();
+    var stream = cvs.captureStream(30);
+    var micStream = null;
+    var rec = null;
+
+    function startRec(useStream) {
+      rec = new MediaRecorder(useStream, { mimeType: mime || undefined, videoBitsPerSecond: 3000000 });
+      var chunks = [];
+      rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+      rec.onstop = function () {
+        var type = mime || 'video/webm';
+        var blob = new Blob(chunks, { type: type });
+        var url = URL.createObjectURL(blob);
+        outVideo.src = url;
+        dlLink.href = url;
+        var ext = type.indexOf('mp4') >= 0 ? 'mp4' : 'webm';
+        dlLink.setAttribute('download', '旅游英语_生成视频.' + ext);
+        resultEl.classList.add('show');
+        genBtn.disabled = false;
+        previewBtn.disabled = false;
+        setStatus('✅ 视频生成完成！可在线预览或点击「下载视频」保存。', 'ok');
+      };
+      rec.start(200);
+      var t0 = performance.now();
+      function loop(now) {
+        var t = (now - t0) / 1000;
+        if (t >= totalDur) { rec.stop(); return; }
+        drawFrame(ctx, W, H, t, totalDur, lines, title);
+        var pct = Math.min(100, Math.round(t / totalDur * 100));
+        setStatus('正在生成视频… ' + pct + '%（约 ' + Math.round(totalDur) + ' 秒）');
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+    }
+
+    if (micOn.checked && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(function (ms) {
+        micStream = ms;
+        var combined = new MediaStream(stream.getTracks().concat(ms.getAudioTracks()));
+        startRec(combined);
+      }).catch(function () {
+        setStatus('未获得麦克风权限，将生成无声视频', 'err');
+        startRec(stream);
+      });
+    } else {
+      startRec(stream);
+    }
+  });
+})();
+</script>
+</body>
+</html>
